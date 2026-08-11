@@ -14,3 +14,21 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   }
   return response.json() as Promise<T>;
 }
+
+export async function downloadFile(path: string, fallbackName: string) {
+  const response = await fetch(`${API_URL}${path}`);
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({ detail: "Export failed" })) as { detail?: string };
+    throw new Error(payload.detail || `Export failed (${response.status})`);
+  }
+  const disposition = response.headers.get("Content-Disposition") || "";
+  const matchedName = disposition.match(/filename="?([^";]+)"?/i)?.[1];
+  const url = URL.createObjectURL(await response.blob());
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = matchedName || fallbackName;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}

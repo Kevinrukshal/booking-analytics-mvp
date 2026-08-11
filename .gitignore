@@ -34,5 +34,10 @@ Thumbs.db
 # Logs
 *.log
 
+# Local development artifacts
+.codex-artifact/
+*.db
+*.sqlite3
+
 # Local task support files
 .codex-artifact/
