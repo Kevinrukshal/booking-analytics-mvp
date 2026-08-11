@@ -36,7 +36,7 @@ export function UploadPage() {
   const summary = result?.summary as Record<string, number | unknown> | undefined;
 
   return <>
-    <PageHeader title="Upload" description="Replace the current dataset with a booking workbook." />
+    <PageHeader title="Upload" description="Upload a monthly or full-year booking workbook." />
     <div className="mx-auto max-w-4xl">
         <button
           type="button"
@@ -52,7 +52,7 @@ export function UploadPage() {
           <h2 className="mt-5 text-xl font-semibold">{processing ? "Processing workbook…" : "Upload booking workbook"}</h2>
           <p className="mt-2 text-sm text-slate-500">{processing ? "Normalizing bookings, joining errors and calculating quality checks." : "Drop an .xlsx file here or choose a file"}</p>
           <span className="button mt-6">{processing ? "Please wait" : "Choose file"}</span>
-          <p className="mt-3 text-xs text-slate-400">Maximum 25 MB · formulas are read as values · macros are never executed</p>
+          <p className="mt-3 text-xs text-slate-400">Maximum 100 MB · monthly and full-year files supported · macros are never executed</p>
         </button>
         <input ref={input} className="hidden" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => void upload(event.target.files?.[0])} />
 

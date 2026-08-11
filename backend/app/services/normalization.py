@@ -103,6 +103,10 @@ def parse_excel_date(value: Any) -> date | None:
         return value
     if isinstance(value, (int, float)) and 1 <= float(value) <= 100000:
         return (datetime(1899, 12, 30) + timedelta(days=float(value))).date()
+    text = clean_text(value)
+    if text and re.fullmatch(r"\d{4}-\d{1,2}-\d{1,2}", text):
+        parsed_iso = pd.to_datetime(text, format="%Y-%m-%d", errors="coerce")
+        return None if pd.isna(parsed_iso) else parsed_iso.date()
     parsed = pd.to_datetime(value, errors="coerce", dayfirst=True)
     return None if pd.isna(parsed) else parsed.date()
 

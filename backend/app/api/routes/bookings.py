@@ -95,12 +95,11 @@ def export_bookings(
     ids: str | None = None, db: Session = Depends(get_db),
 ):
     selected_ids = _selected_ids(ids)
-    rows, counts = _filtered_bookings(
+    rows, _ = _filtered_bookings(
         db, search, agent, team, booking_status, product_status, has_errors,
         pending_product, date_from, date_to, selected_ids,
     )
-    scope = f"{len(rows):,} selected booking{'s' if len(rows) != 1 else ''}" if selected_ids else f"{len(rows):,} filtered booking{'s' if len(rows) != 1 else ''}"
-    content = build_bookings_export(rows, counts, scope)
+    content = build_bookings_export(rows)
     filename = f"booking-analytics-bookings-{datetime.now():%Y%m%d-%H%M}.xlsx"
     return StreamingResponse(
         BytesIO(content),

@@ -89,12 +89,11 @@ def export_errors(
     ids: str | None = None, db: Session = Depends(get_db),
 ):
     selected_ids = _selected_ids(ids)
-    rows, booking_refs = _filtered_errors(
+    rows, _ = _filtered_errors(
         db, status, agent, handled_agent, category, severity, booking_reference,
         matched, date_from, date_to, selected_ids,
     )
-    scope = f"{len(rows):,} selected error{'s' if len(rows) != 1 else ''}" if selected_ids else f"{len(rows):,} filtered error{'s' if len(rows) != 1 else ''}"
-    content = build_errors_export(rows, booking_refs, scope)
+    content = build_errors_export(rows)
     filename = f"booking-analytics-errors-{datetime.now():%Y%m%d-%H%M}.xlsx"
     return StreamingResponse(
         BytesIO(content),

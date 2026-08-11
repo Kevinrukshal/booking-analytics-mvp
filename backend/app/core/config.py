@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
     ai_classify_on_import: bool = False
-    max_upload_mb: int = 25
+    max_upload_mb: int = 100
     min_agent_bookings: int = 10
 
     @property
@@ -25,4 +25,3 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-
