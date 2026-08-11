@@ -1,18 +1,9 @@
-import { Bot, CheckCircle2, FileSpreadsheet, LoaderCircle, UploadCloud, XCircle } from "lucide-react";
+import { CheckCircle2, FileSpreadsheet, UploadCloud, XCircle } from "lucide-react";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { PageHeader } from "../components/ui/PageHeader";
-import { useApi } from "../hooks/useApi";
 import type { UploadSummary } from "../types";
-
-type AIResult = {
-  category: string;
-  subcategory: string;
-  severity: string;
-  summary: string;
-  recommended_action: string;
-};
 
 export function UploadPage() {
   const input = useRef<HTMLInputElement>(null);
@@ -21,11 +12,6 @@ export function UploadPage() {
   const [processing, setProcessing] = useState(false);
   const [result, setResult] = useState<UploadSummary>();
   const [error, setError] = useState<string>();
-  const aiStatus = useApi<{ enabled: boolean }>("/api/ai/status");
-  const [issue, setIssue] = useState("pax name entered wrong in pnr");
-  const [aiProcessing, setAiProcessing] = useState(false);
-  const [aiResult, setAiResult] = useState<AIResult>();
-  const [aiError, setAiError] = useState<string>();
 
   async function upload(file?: File) {
     if (!file) return;
@@ -47,29 +33,11 @@ export function UploadPage() {
     }
   }
 
-  async function testAI() {
-    setAiProcessing(true);
-    setAiError(undefined);
-    setAiResult(undefined);
-    try {
-      setAiResult(await api<AIResult>("/api/ai/classify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ issue }),
-      }));
-    } catch (cause) {
-      setAiError(cause instanceof Error ? cause.message : "AI classification failed.");
-    } finally {
-      setAiProcessing(false);
-    }
-  }
-
   const summary = result?.summary as Record<string, number | unknown> | undefined;
 
   return <>
-    <PageHeader title="Upload" description="Replace the current dataset and verify optional AI classification." />
-    <div className="mx-auto grid max-w-6xl gap-6 xl:grid-cols-[1.25fr_.75fr]">
-      <div>
+    <PageHeader title="Upload" description="Replace the current dataset with a booking workbook." />
+    <div className="mx-auto max-w-4xl">
         <button
           type="button"
           onClick={() => input.current?.click()}
@@ -100,22 +68,8 @@ export function UploadPage() {
             <Summary label="Missing booking refs" value={Number(summary?.missing_booking_references || 0)} />
             <Summary label="Exact duplicate errors skipped" value={Number(summary?.duplicate_errors_skipped || 0)} />
           </div>
-          <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5"><p className="text-xs text-slate-500">AI classification {result.aiEnabled ? "enabled" : "disabled — deterministic categories are active"}.</p><button className="button" onClick={() => navigate("/")}>View dashboard</button></div>
+          <div className="mt-6 flex justify-end border-t border-slate-100 pt-5"><button className="button" onClick={() => navigate("/")}>View dashboard</button></div>
         </div>}
-      </div>
-
-      <section className="card h-fit p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3"><div className="rounded-xl bg-accent-50 p-2.5 text-accent-700"><Bot size={20} /></div><div><h2 className="font-semibold">Test AI classifier</h2><p className="mt-1 text-xs text-slate-500">Sends only this issue text to Gemini.</p></div></div>
-          <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${aiStatus.data?.enabled ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{aiStatus.data?.enabled ? "Enabled" : "Disabled"}</span>
-        </div>
-        <label className="mt-6 block text-xs font-semibold uppercase tracking-wide text-slate-500">Sample issue</label>
-        <textarea className="mt-2 min-h-32 w-full resize-y rounded-xl border border-slate-200 p-3 text-sm leading-6 text-slate-700 focus:border-accent-500" value={issue} onChange={(event) => setIssue(event.target.value)} maxLength={4000} />
-        <button className="button mt-3 w-full" disabled={!aiStatus.data?.enabled || aiProcessing || issue.trim().length < 3} onClick={() => void testAI()}>{aiProcessing ? <LoaderCircle className="animate-spin" size={16} /> : <Bot size={16} />}Classify issue</button>
-        {!aiStatus.loading && !aiStatus.data?.enabled && <p className="mt-3 text-xs leading-5 text-slate-500">Add <code>GEMINI_API_KEY</code> and <code>GEMINI_MODEL</code> to the backend environment, then restart Docker.</p>}
-        {aiError && <p className="mt-3 rounded-xl bg-red-50 p-3 text-xs text-red-700">{aiError}</p>}
-        {aiResult && <div className="mt-4 space-y-3 rounded-xl bg-slate-50 p-4 text-sm"><div className="flex flex-wrap gap-2"><span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">{aiResult.category}</span><span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-700">{aiResult.severity}</span></div><p className="leading-6 text-slate-700">{aiResult.summary}</p><p className="text-xs leading-5 text-slate-500"><b>Recommended:</b> {aiResult.recommended_action}</p></div>}
-      </section>
     </div>
   </>;
 }
