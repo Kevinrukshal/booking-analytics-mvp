@@ -1,9 +1,18 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const proxyTarget = process.env.API_PROXY_TARGET || "http://localhost:8000";
+
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5173, host: "0.0.0.0" },
-  preview: { port: 5173, host: "0.0.0.0" },
+  server: {
+    port: 5173,
+    host: "0.0.0.0",
+    proxy: { "/api": { target: proxyTarget, changeOrigin: true }, "/health": { target: proxyTarget, changeOrigin: true } },
+  },
+  preview: {
+    port: 5173,
+    host: "0.0.0.0",
+    proxy: { "/api": { target: proxyTarget, changeOrigin: true }, "/health": { target: proxyTarget, changeOrigin: true } },
+  },
 });
-

@@ -1,4 +1,4 @@
-const API_URL = (import.meta.env.VITE_API_URL as string | undefined) || "http://localhost:8000";
+const API_URL = (import.meta.env.VITE_API_URL as string | undefined) || "";
 
 export function queryString(params: Record<string, string | number | boolean | undefined | null>) {
   const query = new URLSearchParams();
@@ -14,4 +14,3 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   }
   return response.json() as Promise<T>;
 }
-

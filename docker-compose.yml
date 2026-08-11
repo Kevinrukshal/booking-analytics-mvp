@@ -12,8 +12,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 15
-    ports:
-      - "5432:5432"
 
   backend:
     build: ./backend
@@ -35,7 +33,9 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+        VITE_API_URL: ${VITE_API_URL:-}
+    environment:
+      API_PROXY_TARGET: http://backend:8000
     depends_on:
       - backend
     ports:
