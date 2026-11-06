@@ -14,7 +14,8 @@ export function UploadPage() {
   const [error, setError] = useState<string>();
 
   async function upload(file?: File) {
-    if (!file) return;
+    if (!file || processing) return;
+    if (!window.confirm("Replace the current dataset with this workbook? Only upload data you are authorized to process.")) return;
     if (!file.name.toLowerCase().endsWith(".xlsx")) {
       setError("Choose an .xlsx workbook.");
       return;

@@ -19,7 +19,7 @@ def list_uploads(db: Session = Depends(get_db)):
 
 
 @router.post("")
-async def upload_workbook(file: UploadFile = File(...), replace: bool = True, db: Session = Depends(get_db)):
+async def upload_workbook(file: UploadFile = File(...), replace: bool = False, db: Session = Depends(get_db)):
     filename = Path(file.filename or "upload.xlsx").name
     if Path(filename).suffix.casefold() != ".xlsx":
         raise HTTPException(415, "Only .xlsx workbooks are supported.")
@@ -47,11 +47,11 @@ async def upload_workbook(file: UploadFile = File(...), replace: bool = True, db
         upload.status = "completed"
         db.commit()
         db.refresh(upload)
-        return {"id": upload.id, "filename": filename, "status": upload.status, "bookingCount": upload.booking_count, "errorCount": upload.error_count, "summary": upload.summary, "aiEnabled": bool(settings.gemini_api_key and settings.gemini_model)}
+        return {"id": upload.id, "filename": filename, "status": upload.status, "bookingCount": upload.booking_count, "errorCount": upload.error_count, "summary": upload.summary, "aiEnabled": bool(settings.allow_external_ai and settings.gemini_api_key and settings.gemini_model)}
     except ValueError as exc:
         db.rollback()
         raise HTTPException(422, str(exc)) from exc
     except Exception:
         db.rollback()
-        raise
+        raise HTTPException(500, "Import failed. Check the workbook format and database availability.") from None
 

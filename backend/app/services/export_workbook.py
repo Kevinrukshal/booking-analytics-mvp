@@ -46,6 +46,8 @@ def _build_workbook(
             if isinstance(value, Decimal):
                 value = float(value)
             cell = sheet.cell(excel_row, column, value)
+            if isinstance(value, str):
+                cell.data_type = "s"  # Untrusted text must never become an Excel formula.
             cell.font = Font(name="Aptos", size=10, color="17211F")
             cell.fill = ROW_FILL if row_count % 2 else ALT_FILL
             cell.alignment = Alignment(

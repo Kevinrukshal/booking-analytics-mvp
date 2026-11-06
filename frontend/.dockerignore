@@ -1,0 +1,16 @@
+.env
+.env.*
+.venv
+node_modules
+dist
+__pycache__
+*.pyc
+.pytest_cache
+*.xlsx
+*.xls
+*.csv
+*.db
+*.sqlite*
+uploads
+data
+*.log

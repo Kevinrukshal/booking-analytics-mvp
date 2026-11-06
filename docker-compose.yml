@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-booking_analytics}
       POSTGRES_USER: ${POSTGRES_USER:-booking_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -16,10 +16,13 @@ services:
   backend:
     build: ./backend
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://booking_user:change_me@db:5432/booking_analytics}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-booking_user}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-booking_analytics}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-}
+      API_ACCESS_TOKEN: ${API_ACCESS_TOKEN:?Set API_ACCESS_TOKEN in .env}
+      ALLOW_UPLOADS: ${ALLOW_UPLOADS:-false}
+      ALLOW_EXTERNAL_AI: ${ALLOW_EXTERNAL_AI:-false}
       AI_CLASSIFY_ON_IMPORT: ${AI_CLASSIFY_ON_IMPORT:-false}
       MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-100}
       MIN_AGENT_BOOKINGS: ${MIN_AGENT_BOOKINGS:-10}
@@ -27,7 +30,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
 
   frontend:
     build:
@@ -39,7 +42,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "5173:5173"
+      - "127.0.0.1:5173:5173"
 
 volumes:
   postgres_data:

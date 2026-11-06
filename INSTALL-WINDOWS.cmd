@@ -17,7 +17,10 @@ if errorlevel 1 goto docker_not_running
 
 if not exist ".env" (
   copy /Y ".env.example" ".env" >nul
-  echo Created local .env from safe defaults.
+  echo Created local .env with empty credential placeholders.
+  echo Set POSTGRES_PASSWORD and API_ACCESS_TOKEN as described in README.md, then run again.
+  pause
+  exit /b 1
 ) else (
   echo Existing .env preserved.
 )

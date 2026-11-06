@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from "react";
+import { AccessGate } from "./components/layout/AccessGate";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
@@ -25,4 +26,4 @@ const router = createBrowserRouter([{ path: "/", element: <AppLayout />, childre
   { path: "upload", element: deferred(<UploadPage />) },
 ]}]);
 
-ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><RouterProvider router={router} /></React.StrictMode>);
+ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><AccessGate><RouterProvider router={router} /></AccessGate></React.StrictMode>);

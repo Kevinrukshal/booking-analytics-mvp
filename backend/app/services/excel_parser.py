@@ -6,6 +6,8 @@ from typing import Any
 
 import pandas as pd
 
+from app.services.workbook_safety import validate_workbook
+
 from app.services.normalization import (
     categorize_issue,
     clean_text,
@@ -50,6 +52,7 @@ def detect_sheet_type(frame: pd.DataFrame) -> str | None:
 
 
 def inspect_workbook(content: bytes) -> dict[str, Any]:
+    validate_workbook(content)
     xls = pd.ExcelFile(BytesIO(content), engine="openpyxl")
     sheets = []
     for name in xls.sheet_names:
@@ -64,6 +67,7 @@ def inspect_workbook(content: bytes) -> dict[str, Any]:
 
 
 def parse_workbook(content: bytes) -> ParsedWorkbook:
+    validate_workbook(content)
     xls = pd.ExcelFile(BytesIO(content), engine="openpyxl")
     booking_frames: list[tuple[str, pd.DataFrame]] = []
     error_frames: list[tuple[str, pd.DataFrame]] = []

@@ -41,3 +41,13 @@ Thumbs.db
 
 # Local task support files
 .codex-artifact/
+
+# Never publish client data or generated audit artifacts
+*.csv
+*.tsv
+*.sql.gz
+*.dump
+*.bak
+*.pdf
+.audit-*.json
+.venv*/

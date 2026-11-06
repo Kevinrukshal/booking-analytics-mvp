@@ -1,5 +1,13 @@
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) || "";
 
+let accessToken = "";
+export function setAccessToken(token: string) { accessToken = token; }
+function authorizedHeaders(init?: RequestInit) {
+  const headers = new Headers(init?.headers);
+  headers.set("Authorization", `Bearer ${accessToken}`);
+  return headers;
+}
+
 export function queryString(params: Record<string, string | number | boolean | undefined | null>) {
   const query = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => { if (value !== undefined && value !== null && value !== "") query.set(key, String(value)); });
@@ -7,7 +15,7 @@ export function queryString(params: Record<string, string | number | boolean | u
 }
 
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, init);
+  const response = await fetch(`${API_URL}${path}`, { ...init, headers: authorizedHeaders(init), cache: "no-store" });
   if (!response.ok) {
     const payload = await response.json().catch(() => ({ detail: "Request failed" })) as { detail?: string };
     throw new Error(payload.detail || `Request failed (${response.status})`);
@@ -16,7 +24,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function downloadFile(path: string, fallbackName: string) {
-  const response = await fetch(`${API_URL}${path}`);
+  const response = await fetch(`${API_URL}${path}`, { headers: authorizedHeaders(), cache: "no-store" });
   if (!response.ok) {
     const payload = await response.json().catch(() => ({ detail: "Export failed" })) as { detail?: string };
     throw new Error(payload.detail || `Export failed (${response.status})`);
