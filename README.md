@@ -56,7 +56,7 @@ The parser:
 
 Only fictional schema examples are documented in `docs/WORKBOOK_STRUCTURE.md`. Do not commit client workbooks or derived reports.
 
-For safe local checks, see `TESTING.md`. Ports bind to loopback only; do not publish temporary public tunnels.
+For safe local checks, see [local testing](docs/TESTING.md). Ports bind to loopback only; do not publish temporary public tunnels.
 
 ## Excel export
 
@@ -69,7 +69,7 @@ Exports are simple `.xlsx` tables modelled on the source workbook: headers begin
 
 ## Windows client ZIP
 
-The application can be delivered without GitHub. Send the client the clean project ZIP, have them extract it to a local folder, and run `INSTALL-WINDOWS.cmd`. Daily start and stop shortcuts are included. See `CLIENT-WINDOWS-SETUP.md` for the complete client instructions.
+The application can be delivered without GitHub. Send the client the clean project ZIP, have them extract it to a local folder, and run `INSTALL-WINDOWS.cmd`. Daily start and stop shortcuts are included. See [Windows client setup](docs/CLIENT-WINDOWS-SETUP.md) for the complete client instructions.
 
 ## Analytics rules
 

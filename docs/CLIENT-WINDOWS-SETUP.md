@@ -2,7 +2,7 @@
 
 This package runs locally on the client's Windows PC. GitHub and developer tools are not required.
 
-Configure the ignored .env with separate random POSTGRES_PASSWORD and API_ACCESS_TOKEN values before starting. See README.md. The dashboard requires the access token and forgets it on reload. Set ALLOW_UPLOADS=true only when ready to import approved local data.
+Configure the ignored .env with separate random POSTGRES_PASSWORD and API_ACCESS_TOKEN values before starting. See the [repository README](../README.md). The dashboard requires the access token and forgets it on reload. Set ALLOW_UPLOADS=true only when ready to import approved local data.
 
 ## Before starting
 
@@ -14,6 +14,8 @@ The client needs:
 - internet access during the first build so Docker can download its base images.
 
 Install Docker Desktop from `https://docs.docker.com/desktop/setup/install/windows-install/`, restart Windows if requested, and open Docker Desktop. Wait until Docker reports that it is running.
+
+The `.cmd` launchers remain in the extracted project root, one folder above this guide.
 
 ## Install from the ZIP
 
